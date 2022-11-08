@@ -1,6 +1,7 @@
 def ConquestCampaign(N: int,M: int,L: int,battalion: list) -> int:
     a = []
     L1 = str(L)
+    sum = 0
 
     if N == 1 and M == 1:
         return 1
@@ -15,6 +16,13 @@ def ConquestCampaign(N: int,M: int,L: int,battalion: list) -> int:
         if k % 2 == 0:
             a[battalion[k] - 1][battalion[k + 1] - 1] = 0
     day = 1
+    for p in range(N):
+        for s in range(M):
+            if a[p][s] != 0:
+                sum += 1
+    if sum == 0:
+        return day
+
     for z in range(N*M):
         sum = 0
         for x in range(N):

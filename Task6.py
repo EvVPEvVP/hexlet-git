@@ -35,6 +35,7 @@ def PatternUnlock(N: int,hits: list) -> str:
                             sum += 1.00000
         hits1.pop(0)
 
+    sum = round(sum,5)
     sum = str(sum)
     sum = list(sum)
 

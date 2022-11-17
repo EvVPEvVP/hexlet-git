@@ -1,4 +1,4 @@
-def BigMinus(str1, str2):
+def BigMinus(str1: str, str2: str) -> str:
 
     if str1 == str2:
         return '0'

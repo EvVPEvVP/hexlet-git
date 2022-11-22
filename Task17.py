@@ -11,14 +11,11 @@ def LineAnalysis(line: str) -> bool:
         if count1 == len(line):
             return True
 
-    if len(line) == 3 and line[0] == '*' and line[2] == '*':
-        return True
-
-    for i in line:
+    for i in range(len(line)):
         length += 1
-        if i == '*':
+        if line[i] == '*':
             count += 1
-        if i == '*' and count > 1:
+        if line[i] == '*' and count > 1 and line[i - 1] == '.':
             break
 
     length -= 1
@@ -26,11 +23,8 @@ def LineAnalysis(line: str) -> bool:
     for i in range(0, len(line), length):
         spisok.append(line[i:i + length])
 
-    if len(spisok) == 2 and spisok[0] != spisok[1]:
-        return False
-
-    spisok.pop(len(spisok) - 1)
-
-    if len(set(spisok)) == 1:
-        return True
+    if len(spisok[len(spisok) - 1]) == (count - 1):
+        spisok.pop(len(spisok) - 1)
+        if len(set(spisok)) == 1:
+            return True
     return False

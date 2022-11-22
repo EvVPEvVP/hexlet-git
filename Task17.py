@@ -26,6 +26,9 @@ def LineAnalysis(line: str) -> bool:
     for i in range(0, len(line), length):
         spisok.append(line[i:i + length])
 
+    if len(spisok) == 2 and spisok[0] != spisok[1]:
+        return False
+
     spisok.pop(len(spisok) - 1)
 
     if len(set(spisok)) == 1:

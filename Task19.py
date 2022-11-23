@@ -1,6 +1,6 @@
-def ShopOLAP(N: int, items: str) -> str:
+def ShopOLAP(N: int, items: list) -> list:
 
-    items1 = items.splitlines()
+    items1 = items.copy()
 
     b = []
     b1 = []
@@ -36,8 +36,10 @@ def ShopOLAP(N: int, items: str) -> str:
     result.sort()
     result = sorted(result, key=lambda x: (x[1]), reverse=True)
 
-    resultstring = ''
+    resultlist = []
 
     for k1 in range(len(result)):
-        resultstring += result[k1][0] + ' ' + str(result[k1][1]) + '\n'
-    return resultstring
+        stri = ''
+        stri += result[k1][0] + ' ' + str(result[k1][1])
+        resultlist.append(stri)
+    return resultlist

@@ -36,4 +36,4 @@ def BiggerGreater(input: str) -> str:
         result = ''.join(result)
         return result
     else:
-        return '""'
+        return ''

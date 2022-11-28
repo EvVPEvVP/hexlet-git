@@ -123,6 +123,6 @@ def TreeOfLife(H: int, W: int, N: int, tree: list) -> list:
             if arr[i][j] == 0:
                 resultstr += '.'
             elif arr[i][j] > 0:
-                resultstr += '*'
+                resultstr += '+'
         resultlist.append(resultstr)
     return resultlist

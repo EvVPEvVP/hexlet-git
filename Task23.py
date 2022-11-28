@@ -118,7 +118,7 @@ def TreeOfLife(H: int, W: int, N: int, tree: list) -> list:
 
     resultlist = []
     for i in range(H):
-        resultstr = ' '
+        resultstr = ''
         for j in range(W):
             if arr[i][j] == 0:
                 resultstr += '.'

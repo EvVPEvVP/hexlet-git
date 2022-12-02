@@ -4,7 +4,9 @@ def Football(F: list, N: int) -> bool:
     F4 = F.copy()
     F3.sort(reverse=True)
     F4.sort(reverse=False)
-    if len(F) == 1 or F3 == F or F4 == F:
+    if len(F) == 1 or F4 == F:
+        return False
+    if F3 == F:
         return True
 
     for i in range(len(F)):

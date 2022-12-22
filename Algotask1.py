@@ -34,7 +34,6 @@ class LinkedList:
     def clean(self):
         self.head = None
         self.tail = None
-        pass
 
     def len(self):
         node = self.head
@@ -68,23 +67,26 @@ class LinkedList:
         return arr
 
     def delete(self, val, all=False):
-        while self.head != None and self.head.value == val:
-            nodeToDelete = self.head
+        x = self.head
+        y = self.head
+        if self.head == None:
+            return
+        if x.value == val and self.head.next == None:
+            self.head = self.tail = None
+            return
+        if x.value == val:
             self.head = self.head.next
-            nodeToDelete = None
-
-        temp = self.head
-        if temp != None:
-            while temp.next != None:
-                if temp.next.value == val and all is True:
-                    nodeToDelete = temp.next
-                    temp.next = temp.next.next
-                    nodeToDelete = None
-                elif temp.next.value == val and all is False:
-                    nodeToDelete = temp.next
-                    temp.next = temp.next.next
-                    nodeToDelete = None
+        while x is not None:
+            if x.value == val:
+                y.next = x.next
+                if x == self.tail:
+                    self.tail = y
+                if all == False:
                     return
                 else:
-                    temp = temp.next
+                    x = self.head
+                    y = self.head
+            else:
+                y = x
+                x = x.next
 

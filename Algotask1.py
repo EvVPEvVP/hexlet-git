@@ -1,8 +1,8 @@
 class Node:
 
-    def __init__(self, v):
+    def __init__(self, v,x=None):
         self.value = v
-        self.next = None
+        self.next = x
 
 class LinkedList:
 
@@ -43,19 +43,23 @@ class LinkedList:
             node = node.next
         return count
 
-    def insert(self,afterNode,newNode):
-        if self.head is None:
+    def insert(self, afterNode, newNode):
+        node = self.head
+        node1 = self.tail
+        if self.head == None:
             self.head = newNode
             self.tail = newNode
             return
-        node = self.head
-        while node is not None:
-            if node.value == afterNode.value:
-                newNode.next = node.next
+        while node != None:
+            if node.value == node1.value:
                 node.next = newNode
+                self.tail = self.tail.next
                 return
-            node = node.next
-        return None
+            if node.value == afterNode.value:
+                node.next = Node(newNode.value, node.next)
+                return
+            else:
+                node = node.next
 
     def find_all(self, val):
         node = self.head
@@ -89,4 +93,5 @@ class LinkedList:
             else:
                 y = x
                 x = x.next
+
 

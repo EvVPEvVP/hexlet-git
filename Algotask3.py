@@ -43,16 +43,28 @@ class DynArray:
         for k in range(self.count - 1, i,-1):
             self.array[k - 1], self.array[k] = self.array[k], self.array[k - 1]
 
-    def delete(self, i):
-        if self.count == 0:
-            return None
-        self.__getitem__(i)
-        if i == self.count - 1:
-            self.array[i] = 0
-            self.count -= 1
-            return None
-        for k in range(i, self.count - 1):
-            self.array[k] = self.array[k + 1]
-        self.array[self.count-1] = 0
-        self.count -= 1
+    # def delete(self, i):
+    #     if self.count == 0:
+    #         return None
+    #     self.__getitem__(i)
+    #     if i == self.count - 1:
+    #         self.array[i] = 0
+    #         self.count -= 1
+    #         return None
+    #     for k in range(i, self.count - 1):
+    #         self.array[k] = self.array[k + 1]
+    #     self.array[self.count-1] = 0
+    #     self.count -= 1
 
+    def delete(self, i):
+        new_array = self.make_array(self.capacity)
+        x = 0
+        for k in range(self.count):
+            if k + x == self.count:
+                self.array = new_array
+                return None
+            if k != i:
+                new_array[k] = self.array[k + x]
+            elif k == i:
+                x += 1
+                new_array[k] = self.array[k + x]

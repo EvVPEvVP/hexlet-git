@@ -1,4 +1,5 @@
 class Stack:
+
     def __init__(self):
         self.stack = []
 
@@ -19,11 +20,4 @@ class Stack:
         else:
             return self.stack[0]
 
-stack = Stack()
-stack.push(1)
-stack.push(2)
-stack.push(3)
-stack.push(4)
-stack.push(5)
-print(stack.pop())
-print(stack.peek())
+

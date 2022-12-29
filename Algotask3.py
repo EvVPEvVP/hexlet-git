@@ -43,8 +43,6 @@ class DynArray:
         self.count += 1
 
     def delete(self, i: int):
-        if self.count == 0:
-            return None
         self.__getitem__(i)
         for k in range(i, self.count - 1):
             self.array[k] = self.array[k + 1]

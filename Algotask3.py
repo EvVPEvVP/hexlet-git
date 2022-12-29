@@ -46,10 +46,6 @@ class DynArray:
         if self.count == 0:
             return None
         self.__getitem__(i)
-        if i == self.count - 1:
-            self.array[i] = 0
-            self.count -= 1
-            return None
         for k in range(i, self.count - 1):
             self.array[k] = self.array[k + 1]
         self.array[self.count-1] = 0

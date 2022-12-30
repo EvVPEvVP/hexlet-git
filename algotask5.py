@@ -9,9 +9,9 @@ class Queue:
     def dequeue(self):
         if self.size() == 0:
             return None
-        first_el = self.queue[0]
+        x = self.queue[0]
         self.queue.pop(0)
-        return first_el
+        return x
 
     def size(self):
         return len(self.queue)

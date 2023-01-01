@@ -1,26 +1,42 @@
+class Stack:
+
+    def __init__(self):
+        self.stack = []
+
+    def size(self):
+        return len(self.stack)
+
+    def push(self, value):
+        self.stack.append(value)
+
+    def pop(self):
+        if self.size() == 0:
+            return None
+        return self.stack.pop()
+
+    def peek(self):
+        if self.size() == 0:
+            return None
+        return self.stack[-1]
+
 class Queue:
 
     def __init__(self):
-        self.s1 = []
-        self.s2 = []
-
-    def enqueue(self, item):
-        self.s1.append(item)
-
-    def size1(self):
-        return len(self.s1)
-
-    def size2(self):
-        return len(self.s2)
+        self.stack_1 = Stack()
+        self.stack_2 = Stack()
 
     def transfer(self):
-        for i in range(self.size1()):
-            self.s2.append(self.s1[-1])
-            self.s1.pop()
+        for i in range(self.stack_1.size()):
+            self.stack_2.push(self.stack_1.peek())
+            self.stack_1.pop()
+
+    def enqueue(self, item):
+        self.stack_1.push(item)
 
     def dequeue(self):
-        if self.size1() == 0 and self.size2() == 0:
+        if self.stack_1.size() == 0 and self.stack_2.size() == 0:
             return None
-        if self.size2() == 0:
+        elif self.stack_2.size() == 0:
             self.transfer()
-        self.s2.pop()
+        x = self.stack_2.pop()
+        return x

@@ -26,59 +26,54 @@ class OrderedList:
             self.head = Node(value)
             self.tail = self.head
             return None
-        if self.head == self.tail:
-            if self.compare(node.value, value) == -1 or self.compare(node.value, value) == 0:
-                if self.__ascending is True:
-                    node.next = Node(value)
-                    node.next.prev = node
-                    self.tail = node.next
-                    return None
-                if self.__ascending is False:
-                    node.prev = Node(value)
-                    node.prev.next = node
-                    self.head = node.prev
-                    return None
-            if self.compare(node.value, value) == 1:
-                if self.__ascending is True:
-                    node.prev = Node(value)
-                    node.prev.next = node
-                    self.head = node.prev
-                    return None
-                if self.__ascending is False:
-                    node.next = Node(value)
-                    node.next.prev = node
-                    self.tail = node.next
-                    return None
-        if self.head != self.tail:
-            if self.__ascending is True:
-                if self.compare(node_end.value, value) == -1 or self.compare(node_end.value, value) == 0:
-                    node_end.next = Node(value)
-                    node.next.prev = node
-                    self.tail = node.next
-                    self.tail = node_end.next
-                    node_end.next.prev = node_end
-                    return None
-                if self.compare(node.value, value) == 1 or self.compare(node.value, value) == 0:
-                    node.prev = Node(value)
-                    node.prev.next = node
-                    self.head = node.prev
-                    return None
-            if self.__ascending is False:
-                if self.compare(node_end.value, value) == 1 or self.compare(node_end.value, value) == 0:
-                    node_end.next = Node(value)
-                    node.next.prev = node
-                    self.tail = node.next
-                    self.tail = node_end.next
-                    node_end.next.prev = node_end
-                    return None
-                if self.compare(node.value, value) == -1 or self.compare(node.value, value) == 0:
-                    node.prev = Node(value)
-                    node.prev.next = node
-                    self.head = node.prev
-                    return None
+        if self.head == self.tail and self.__ascending is True and (self.compare(node.value, value) == -1 or self.compare(node.value, value) == 0):
+            node.next = Node(value)
+            node.next.prev = node
+            self.tail = node.next
+            return None
+        if self.head == self.tail and self.__ascending is True and self.compare(node.value, value) == 1:
+            node.prev = Node(value)
+            node.prev.next = node
+            self.head = node.prev
+            return None
+        if self.head == self.tail and self.__ascending is False and (self.compare(node.value, value) == -1 or self.compare(node.value, value) == 0):
+            node.prev = Node(value)
+            node.prev.next = node
+            self.head = node.prev
+            return None
+        if self.head == self.tail and self.__ascending is False and self.compare(node.value, value) == 1:
+            node.next = Node(value)
+            node.next.prev = node
+            self.tail = node.next
+            return None
+
+        if self.head != self.tail and self.__ascending is True and (self.compare(node_end.value, value) == -1 or self.compare(node_end.value, value) == 0):
+            node_end.next = Node(value)
+            node.next.prev = node
+            self.tail = node.next
+            self.tail = node_end.next
+            node_end.next.prev = node_end
+            return None
+        if self.head != self.tail and self.__ascending is True and (self.compare(node.value, value) == 1 or self.compare(node.value, value) == 0):
+            node.prev = Node(value)
+            node.prev.next = node
+            self.head = node.prev
+            return None
+        if self.head != self.tail and self.__ascending is False and (self.compare(node_end.value, value) == 1 or self.compare(node_end.value, value) == 0):
+            node_end.next = Node(value)
+            node.next.prev = node
+            self.tail = node.next
+            self.tail = node_end.next
+            node_end.next.prev = node_end
+            return None
+        if self.head != self.tail and self.__ascending is False and (self.compare(node.value, value) == -1 or self.compare(node.value, value) == 0):
+            node.prev = Node(value)
+            node.prev.next = node
+            self.head = node.prev
+            return None
+
         while node is not None:
-            if (self.compare(node.value, value) == -1 and self.compare(node.next.value, value) == 1) or (
-                    self.compare(node.value, value) == 1 and self.compare(node.next.value, value) == -1):
+            if ((self.compare(node.value, value) == -1 or self.compare(node.value, value) == 0) and (self.compare(node.next.value, value) == 1 or self.compare(node.next.value, value) == 0)) or ((self.compare(node.value, value) == 1 or self.compare(node.value, value) == 0) and (self.compare(node.next.value, value) == -1) or self.compare(node.next.value, value) == -0):
                 node_next = node.next
                 node.next = Node(value)
                 node.next.prev = node
@@ -144,12 +139,12 @@ class OrderedList:
         return cnt
 
     def get_all(self):
-        lst = []
+        r = []
         node = self.head
         while node is not None:
-            lst.append(node.value)
+            r.append(node.value)
             node = node.next
-        return lst
+        return r
 
 class OrderedStringList(OrderedList):
 
@@ -164,3 +159,14 @@ class OrderedStringList(OrderedList):
         if v1 == v2:
             return 0
         return 1
+
+my_list = OrderedList(False)
+my_list.add(4)
+my_list.add(3)
+my_list.add(9)
+my_list.add(3)
+print(my_list.find(2))
+my_list.find(5)
+my_list.delete(3)
+my_list.delete(5)
+print(my_list.get_all())

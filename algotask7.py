@@ -160,13 +160,3 @@ class OrderedStringList(OrderedList):
             return 0
         return 1
 
-my_list = OrderedList(False)
-my_list.add(4)
-my_list.add(3)
-my_list.add(9)
-my_list.add(3)
-print(my_list.find(2))
-my_list.find(5)
-my_list.delete(3)
-my_list.delete(5)
-print(my_list.get_all())

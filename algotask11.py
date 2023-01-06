@@ -12,11 +12,11 @@ class BloomFilter:
         return x
 
     def hash2(self, str1):
-        x = 0
+        x1 = 0
         for c in str1:
             code = ord(c)
-            x = (code + (x * 223)) % self.filter_len
-        return x
+            x1 = (code + (x1 * 223)) % self.filter_len
+        return x1
 
     def add(self, str1):
         self.slots[self.hash1(str1)] = 1

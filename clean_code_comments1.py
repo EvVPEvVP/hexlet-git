@@ -84,6 +84,37 @@ def find_duplicate(nums):
     # If no duplicates were found, return None
     return None
 
+3.1.6
+
+def matrix_multiplication(matrix1, matrix2):
+    # Initialize an empty matrix to hold the result
+    result = []
+    # Iterate over each row of matrix1
+    for i in range(len(matrix1)):
+        # Initialize an empty row for the result matrix
+        row = []
+        # Iterate over each column of matrix2
+        for j in range(len(matrix2[0])):
+            # Calculate the dot product of the current row of matrix1 and the current column of matrix2
+            total = 0
+            for k in range(len(matrix2)):
+                total += matrix1[i][k] * matrix2[k][j]
+            # Append the dot product to the current row of the result matrix
+            row.append(total)
+        # Append the completed row to the result matrix
+        result.append(row)
+    # Return the result matrix
+    return result
+
+3.1.7
+
+def calculate_average(numbers):
+    # Calculate the average of a list of numbers
+    total = 0       # Initialize a variable to hold the sum of the numbers
+    for number in numbers:
+        total += number     # Add each number in the list to the total
+    average = total / len(numbers)  # Divide the total by the number of numbers to get the average
+    return average
 
 
 3.2.

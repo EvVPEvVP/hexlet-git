@@ -1,14 +1,10 @@
 import os
 
-def search_files(directory):
-    files = []
-    search_files_recursive(directory, files)
-    return files
-
-def search_files_recursive(directory, files):
+def search_files_recursive(directory):
     for filename in os.listdir(directory):
         filepath = os.path.join(directory, filename)
         if os.path.isfile(filepath):
-            files.append(filepath)
+            print(filepath)
         elif os.path.isdir(filepath):
-            search_files_recursive(filepath, files)
+            search_files_recursive(filepath)
+

@@ -59,25 +59,6 @@ class SimpleTree:
         OriginalNode.Parent = None
         self.AddChild(NewParent, OriginalNode)
 
-    def MoveNode(self, OriginalNode, NewParent):
-        # Check for errors
-        if self.Root is None:
-            return
-        if OriginalNode is None or NewParent is None:
-            return
-        if OriginalNode.Parent is None:
-            return
-        if OriginalNode == NewParent or OriginalNode.Parent == NewParent:
-            return
-        # Check if OriginalNode is already a child of NewParent
-        if OriginalNode in NewParent.Children:
-            return
-        # Remove OriginalNode from its old parent
-        OriginalNode.Parent.Children.remove(OriginalNode)
-        OriginalNode.Parent = None
-        # Add OriginalNode to its new parent
-        self.AddChild(NewParent, OriginalNode)
-
     def Count(self):
         if self.Root is None:
             return 0

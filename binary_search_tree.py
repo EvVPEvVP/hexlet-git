@@ -154,6 +154,18 @@ class BST:
                         BSTFind.Node = None
                         return True
 
+                if del_node.LeftChild == None and del_node.RightChild != None:
+                    stop_node.LeftChild.Parent = del_node
+                    del_node.Parent = stop_node.Parent
+                    stop_node.Parent.RightChild = del_node
+                    del_node.RightChild = stop_node.RightChild
+                    stop_node.RightChild.Parent = del_node
+                    del_node.LeftChild = stop_node.LeftChild
+                    BSTFind.Node = None
+                    return True
+                else:
+                    del_node = del_node.LeftChild
+
     def Count(self):
         if self.Root is None:
             return 0

@@ -1,78 +1,83 @@
 class BSTNode:
-
     def __init__(self, key, val, parent):
-        self.NodeKey = key  # ключ узла
-        self.NodeValue = val  # значение в узле
-        self.Parent = parent  # родитель или None для корня
-        self.LeftChild = None  # левый потомок
-        self.RightChild = None  # правый потомок
+        self.NodeKey = key
+        self.NodeValue = val
+        self.Parent = parent
+        self.LeftChild = None
+        self.RightChild = None
 
 
-class BSTFind:  # промежуточный результат поиска
-
+class BSTFind:
     def __init__(self):
         self.Node = None  # None если
         # в дереве вообще нету узлов
-
         self.NodeHasKey = False  # True если узел найден
         self.ToLeft = False  # True, если родительскому узлу надо
         # добавить новый узел левым потомком
 
 
 class BST:
-
     def __init__(self, node):
-        self.Root = node  # корень дерева, или None
+        self.Root = node
 
     def FindNodeByKey(self, key):
-        current_node = self.Root
-        result = BSTFind()
-
-        while current_node is not None:
-            if current_node.NodeKey == key:
-                result.Node = current_node
-                result.NodeHasKey = True
-                return result
-
-            result.ToLeft = current_node.NodeKey > key
-            if result.ToLeft:
-                current_node = current_node.LeftChild
-            else:
-                current_node = current_node.RightChild
-
-            if current_node is None:
-                result.Node = current_node
-                return result
-
-        return result
+        cursor_node = self.Root
+        BSTFind.NodeHasKey = False
+        if cursor_node == None:
+            BSTFind.Node = None
+            return BSTFind
+        while True:
+            if cursor_node.NodeKey == key:
+                BSTFind.NodeHasKey = True
+                BSTFind.Node = cursor_node
+                return BSTFind
+            if cursor_node.NodeKey < key and cursor_node.RightChild != None:
+                cursor_node = cursor_node.RightChild
+                BSTFind.Node = cursor_node
+            if cursor_node.NodeKey < key and cursor_node.RightChild == None:
+                BSTFind.Node = cursor_node
+                BSTFind.ToLeft = False
+                return BSTFind
+            if cursor_node.NodeKey > key and cursor_node.LeftChild != None:
+                cursor_node = cursor_node.LeftChild
+                BSTFind.Node = cursor_node
+            if cursor_node.NodeKey > key and cursor_node.LeftChild == None:
+                BSTFind.Node = cursor_node
+                BSTFind.ToLeft = True
+                return BSTFind
 
     def AddKeyValue(self, key, val):
-        find_result = self.FindNodeByKey(key)
-
-        if find_result.NodeHasKey:
-            return False # do nothing, the key already exists
-
-        new_node = BSTNode(key, val, find_result.Node)
-
-        if find_result.Node is None:  # the tree is empty
-            self.Root = new_node
-        elif find_result.ToLeft:
-            find_result.Node.LeftChild = new_node
-        else:
-            find_result.Node.RightChild = new_node
+        self.FindNodeByKey(key)
+        if BSTFind.Node == None or BSTFind.NodeHasKey == True:
+            return False
+        if BSTFind.ToLeft == False:
+            node = BSTNode(key, val, BSTFind.Node)
+            BSTFind.Node.RightChild = node
+            return True
+        if BSTFind.ToLeft == True:
+            node = BSTNode(key, val, BSTFind.Node)
+            BSTFind.Node.LeftChild = node
+            return True
 
     def FinMinMax(self, FromNode, FindMax):
-        if FromNode is None:
+        cursor_node = self.Root
+        if cursor_node == None:
             return None
-        node = FromNode
-        if FindMax:
-            while node.RightChild is not None:
-                node = node.RightChild
-            return node
-        else:
-            while node.LeftChild is not None:
-                node = node.LeftChild
-            return node
+        cursor_node = FromNode
+        if cursor_node == None:
+            return None
+        if cursor_node.RightChild == None and cursor_node.LeftChild == None:
+            return None
+        if FindMax == True:
+            while cursor_node.RightChild != None:
+                cursor_node = cursor_node.RightChild
+                if cursor_node.RightChild == None:
+                    return cursor_node
+        if FindMax == False:
+            while cursor_node.LeftChild != None:
+                cursor_node = cursor_node.LeftChild
+                if cursor_node.LeftChild == None:
+                    return cursor_node
 
     def DeleteNodeByKey(self, key):
         self.FindNodeByKey(key)
@@ -122,7 +127,7 @@ class BST:
                     del_node.RightChild.LeftChild = del_node.LeftChild
                     BSTFind.Node = None
                     return True
-                if del_node.Parent.RightChild == del_node:  # редактировать
+                if del_node.Parent.RightChild == del_node:  
                     del_node.RightChild.Parent = del_node.Parent
                     del_node.Parent.RightChild = del_node.RightChild
                     del_node.LeftChild.Parent = del_node.RightChild
@@ -167,15 +172,27 @@ class BST:
                     del_node = del_node.LeftChild
 
     def Count(self):
-        if self.Root is None:
+        lst = []
+        stack = []
+        node = self.Root
+        if node == None:
             return 0
-        count = 0
-        queue = [self.Root]
-        while len(queue) > 0:
-            node = queue.pop(0)
-            count += 1
-            if node.LeftChild is not None:
-                queue.append(node.LeftChild)
-            if node.RightChild is not None:
-                queue.append(node.RightChild)
-        return count
+        lst.append(node)
+        if node.LeftChild != None:
+            stack.append(node.LeftChild)
+        if node.RightChild != None:
+            stack.append(node.RightChild)
+        if node.LeftChild == None and node.RightChild == None:
+            return 1
+        while True:
+            node = stack[0]
+            if node.LeftChild != None:
+                stack.append(node.LeftChild)
+            if node.RightChild != None:
+                stack.append(node.RightChild)
+            lst.append(node)
+            stack.pop(0)
+            if len(stack) == 0:
+                break
+        return len(lst)
+

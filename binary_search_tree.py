@@ -129,14 +129,28 @@ class BST:
         return True
 
     def Count(self):
-        count = 0
-        def traverse(node):
-            nonlocal count
-            if node:
-                count += 1
-                traverse(node.LeftChild)
-                traverse(node.RightChild)
-        traverse(self.Root)
-        return count
+        lst = []
+        stack = []
+        node = self.Root
+        if node == None:
+            return 0
+        lst.append(node)
+        if node.LeftChild != None:
+            stack.append(node.LeftChild)
+        if node.RightChild != None:
+            stack.append(node.RightChild)
+        if node.LeftChild == None and node.RightChild == None:
+            return 1
+        while True:
+            node = stack[0]
+            if node.LeftChild != None:
+                stack.append(node.LeftChild)
+            if node.RightChild != None:
+                stack.append(node.RightChild)
+            lst.append(node)
+            stack.pop(0)
+            if len(stack) == 0:
+                break
+        return len(lst)
 
 

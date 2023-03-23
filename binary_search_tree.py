@@ -128,20 +128,15 @@ class BST:
 
         return True
 
-    def count(self):
-        if self.Root is None:
-            return 0
-
+    def Count(self):
         count = 0
-        stack = [self.Root]
-        while stack:
-            node = stack.pop()
-            count += 1
-            if node.LeftChild:
-                stack.append(node.LeftChild)
-            if node.RightChild:
-                stack.append(node.RightChild)
-
+        def traverse(node):
+            nonlocal count
+            if node:
+                count += 1
+                traverse(node.LeftChild)
+                traverse(node.RightChild)
+        traverse(self.Root)
         return count
 
 

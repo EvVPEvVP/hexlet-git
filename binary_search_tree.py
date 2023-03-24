@@ -1,13 +1,14 @@
 class BSTNode:
+
     def __init__(self, key, val, parent):
-        self.NodeKey = key
-        self.NodeValue = val
-        self.Parent = parent
-        self.LeftChild = None
-        self.RightChild = None
+        self.NodeKey = key  # ключ узла
+        self.NodeValue = val  # значение в узле
+        self.Parent = parent  # родитель или None для корня
+        self.LeftChild = None  # левый потомок
+        self.RightChild = None  # правый потомок
 
+class BSTFind:  # промежуточный результат поиска
 
-class BSTFind:
     def __init__(self):
         self.Node = None  # None если
         # в дереве вообще нету узлов
@@ -15,45 +16,54 @@ class BSTFind:
         self.ToLeft = False  # True, если родительскому узлу надо
         # добавить новый узел левым потомком
 
-
 class BST:
+
     def __init__(self, node):
-        self.Root = node
+        self.Root = node  # корень дерева, или None
 
     def FindNodeByKey(self, key):
         res = BSTFind()
-        if self.Root is None:
-            return res
         current_node = self.Root
+
         while current_node is not None:
-            if key == current_node.NodeKey:
-                res.Node = current_node
+            if current_node.NodeKey == key:
                 res.NodeHasKey = True
+                res.Node = current_node
                 return res
             elif key < current_node.NodeKey:
                 if current_node.LeftChild is None:
                     res.Node = current_node
                     res.ToLeft = True
                     return res
-                current_node = current_node.LeftChild
+                else:
+                    current_node = current_node.LeftChild
             else:
                 if current_node.RightChild is None:
                     res.Node = current_node
+                    res.ToLeft = False
                     return res
-                current_node = current_node.RightChild
+                else:
+                    current_node = current_node.RightChild
+
+        # the tree is empty
         return res
 
     def AddKeyValue(self, key, val):
-        find_result = self.FindNodeByKey(key)
-        if find_result.NodeHasKey:
+        # ищем узел, в который нужно добавить новый узел
+        node_find = self.FindNodeByKey(key)
+
+        # проверяем, есть ли уже узел с таким ключом
+        if node_find.NodeHasKey:
             return False
-        new_node = BSTNode(key, val, find_result.Node)
-        if find_result.Node is None:
+
+        # добавляем новый узел
+        new_node = BSTNode(key, val, node_find.Node)
+        if node_find.Node is None:  # дерево было пустым
             self.Root = new_node
-        elif find_result.ToLeft:
-            find_result.Node.LeftChild = new_node
+        elif node_find.ToLeft:
+            node_find.Node.LeftChild = new_node
         else:
-            find_result.Node.RightChild = new_node
+            node_find.Node.RightChild = new_node
         return True
 
     def FinMinMax(self, FromNode, FindMax):
@@ -69,88 +79,116 @@ class BST:
                 node = node.LeftChild
             return node
 
-    def DeleteNodeByKey(self, key):
-        # ищем узел по ключу
-        find_result = self.FindNodeByKey(key)
+    def Count(self):
+        if self.Root is None:
+            return 0
 
-        # если узел не найден, ничего не делаем
-        if not find_result.NodeHasKey:
+        count = 1
+        stack = [self.Root]
+
+        while stack:
+            node = stack.pop()
+            if node.LeftChild:
+                count += 1
+                stack.append(node.LeftChild)
+            if node.RightChild:
+                count += 1
+                stack.append(node.RightChild)
+
+        return count
+
+    def DeleteNodeByKey(self, key):
+        node_to_delete = self.FindNodeByKey(key)
+        if not node_to_delete.NodeHasKey:
             return False
 
-        node_to_delete = find_result.Node
-
-        # если удаляем корневой узел, то нужно переставить корень
-        if node_to_delete == self.Root:
-            # если корневой узел - лист, то просто удаляем его
-            if not node_to_delete.LeftChild and not node_to_delete.RightChild:
+        node = node_to_delete.Node
+        if node.LeftChild is None and node.RightChild is None:
+            if node == self.Root:
                 self.Root = None
-                return True
-
-            # если корневой узел имеет только одного потомка, то этот потомок становится новым корнем
-            if not node_to_delete.LeftChild:
-                self.Root = node_to_delete.RightChild
-                node_to_delete.RightChild.Parent = None
-                return True
-
-            if not node_to_delete.RightChild:
-                self.Root = node_to_delete.LeftChild
-                node_to_delete.LeftChild.Parent = None
-                return True
-
-        # находим преемника
-        if node_to_delete.RightChild:
-            successor = node_to_delete.RightChild
-            while successor.LeftChild:
+            elif node.Parent.LeftChild == node:
+                node.Parent.LeftChild = None
+            else:
+                node.Parent.RightChild = None
+        elif node.LeftChild is None or node.RightChild is None:
+            child = node.LeftChild or node.RightChild
+            if node == self.Root:
+                self.Root = child
+                child.Parent = None
+            elif node.Parent.LeftChild == node:
+                node.Parent.LeftChild = child
+                child.Parent = node.Parent
+            else:
+                node.Parent.RightChild = child
+                child.Parent = node.Parent
+        else:
+            successor = node.RightChild
+            while successor.LeftChild is not None:
                 successor = successor.LeftChild
-        else:
-            successor = node_to_delete.Parent
-            while successor and successor.RightChild == node_to_delete:
-                node_to_delete = successor
-                successor = successor.Parent
-
-        # заменяем удаляемый узел преемником
-        if node_to_delete.Parent.LeftChild == node_to_delete:
-            node_to_delete.Parent.LeftChild = successor
-        else:
-            node_to_delete.Parent.RightChild = successor
-
-        if successor:
-            successor.Parent = node_to_delete.Parent
-
-        # преемник заменяет удаляемый узел
-        if node_to_delete.LeftChild and node_to_delete.LeftChild != successor:
-            node_to_delete.LeftChild.Parent = successor
-            successor.LeftChild = node_to_delete.LeftChild
-
-        if node_to_delete.RightChild and node_to_delete.RightChild != successor:
-            node_to_delete.RightChild.Parent = successor
-            successor.RightChild = node_to_delete.RightChild
-
+            if successor.RightChild is None:
+                node.NodeKey = successor.NodeKey
+                node.NodeValue = successor.NodeValue
+                if successor.Parent.LeftChild == successor:
+                    successor.Parent.LeftChild = None
+                else:
+                    successor.Parent.RightChild = None
+            else:
+                node.NodeKey = successor.NodeKey
+                node.NodeValue = successor.NodeValue
+                successor.RightChild.Parent = successor.Parent
+                successor.Parent.LeftChild = successor.RightChild
         return True
 
-    def Count(self):
-        lst = []
-        stack = []
-        node = self.Root
-        if node == None:
-            return 0
-        lst.append(node)
-        if node.LeftChild != None:
-            stack.append(node.LeftChild)
-        if node.RightChild != None:
-            stack.append(node.RightChild)
-        if node.LeftChild == None and node.RightChild == None:
-            return 1
-        while True:
-            node = stack[0]
-            if node.LeftChild != None:
-                stack.append(node.LeftChild)
-            if node.RightChild != None:
-                stack.append(node.RightChild)
-            lst.append(node)
-            stack.pop(0)
-            if len(stack) == 0:
-                break
-        return len(lst)
 
 
+
+
+
+root = BSTNode(8, "root", None)
+root.LeftChild = BSTNode(3, "left", root)
+root.RightChild = BSTNode(10, "right", root)
+root.LeftChild.LeftChild = BSTNode(1, "left.left", root.LeftChild)
+root.LeftChild.RightChild = BSTNode(6, "left.right", root.LeftChild)
+root.RightChild.RightChild = BSTNode(14, "right.right", root.RightChild)
+root.RightChild.RightChild.LeftChild = BSTNode(13, "right.right.left", root.RightChild.RightChild)
+
+bst = BST(root)
+
+assert bst.FindNodeByKey(8).NodeHasKey == True
+assert bst.FindNodeByKey(3).NodeHasKey == True
+assert bst.FindNodeByKey(10).NodeHasKey == True
+assert bst.FindNodeByKey(1).NodeHasKey == True
+assert bst.FindNodeByKey(6).NodeHasKey == True
+assert bst.FindNodeByKey(14).NodeHasKey == True
+assert bst.FindNodeByKey(9).NodeHasKey == False
+assert bst.FindNodeByKey(11).NodeHasKey == False
+assert bst.FindNodeByKey(12).NodeHasKey == False
+assert bst.FindNodeByKey(13).NodeHasKey == False
+assert bst.FindNodeByKey(60).NodeHasKey == False
+assert bst.FindNodeByKey(19).NodeHasKey == False
+
+assert bst.Count() == 6
+
+assert bst.AddKeyValue(8,'x') == False
+assert bst.AddKeyValue(3,'x') == False
+assert bst.AddKeyValue(10,'x') == False
+assert bst.AddKeyValue(1,'x') == False
+assert bst.AddKeyValue(6,'x') == False
+assert bst.AddKeyValue(14,'x') == False
+assert bst.AddKeyValue(90,'x') == True
+assert bst.AddKeyValue(91,'x') == True
+assert bst.AddKeyValue(92,'x') == True
+assert bst.AddKeyValue(93,'x') == True
+assert bst.AddKeyValue(94,'x') == True
+assert bst.AddKeyValue(95,'x') == True
+
+assert bst.Count() == 12
+
+assert bst.FinMinMax(root,False).NodeKey == 1
+assert bst.FinMinMax(root,True).NodeKey == 95
+assert bst.FinMinMax(root.LeftChild,False).NodeKey == 1
+assert bst.FinMinMax(root.LeftChild,True).NodeKey == 6
+
+assert bst.DeleteNodeByKey(100) == False
+assert bst.DeleteNodeByKey(95) == True
+assert bst.Count() == 11

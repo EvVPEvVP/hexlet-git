@@ -160,9 +160,7 @@ class BST:
         return tuple(result)
 
     def DeepAllNodes(self, order):
-        """
-        0 (in-order), 1 (post-order), or 2 (pre-order).
-        """
+        
         result = []
 
         def traverse(node):

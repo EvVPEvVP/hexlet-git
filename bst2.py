@@ -149,7 +149,7 @@ class BST:
 
         while queue:
             node = queue.pop(0)
-            result.append((node.NodeKey, node.NodeValue, node.Parent))
+            result.append(BSTNode(node.NodeKey, node.NodeValue, node.Parent))
 
             if node.LeftChild:
                 queue.append(node.LeftChild)
@@ -160,7 +160,7 @@ class BST:
         return tuple(result)
 
     def DeepAllNodes(self, order):
-        
+
         result = []
 
         def traverse(node):
@@ -168,17 +168,17 @@ class BST:
                 return
 
             if order == 2:  # Pre-order
-                result.append((node.NodeKey, node.NodeValue, node.Parent))
+                result.append(node)
 
             traverse(node.LeftChild)
 
             if order == 0:  # In-order
-                result.append((node.NodeKey, node.NodeValue, node.Parent))
+                result.append(node)
 
             traverse(node.RightChild)
 
             if order == 1:  # Post-order
-                result.append((node.NodeKey, node.NodeValue, node.Parent))
+                result.append(node)
 
         traverse(self.Root)
 

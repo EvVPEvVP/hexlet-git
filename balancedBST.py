@@ -1,52 +1,69 @@
 class BSTNode:
 
     def __init__(self, key, parent):
-        self.NodeKey = key  # ключ узла
-        self.Parent = parent  # родитель или None для корня
-        self.LeftChild = None  # левый потомок
-        self.RightChild = None  # правый потомок
-        self.Level = 0  # уровень узла
+        self.NodeKey = key
+        self.Parent = parent
+        self.LeftChild = None
+        self.RightChild = None
+        self.Level = 0
 
 
 class BalancedBST:
 
     def __init__(self):
-        self.Root = None  # корень дерева
+        self.Root = None
 
     def GenerateTree(self, a):
-        # создаём дерево с нуля из неотсортированного массива a
-        self.Root = self._generate_node(a, 0, len(a) - 1, None, 0)
-
-    def _generate_node(self, a, start, end, parent, level):
-        if start > end:
+        if not a:
             return None
+        a = sorted(list(set(a)))
+        n = len(a)
+        if n == 1:
+            self.Root = BSTNode(a[0], None)
+            return
+        mid = n // 2
+        self.Root = BSTNode(a[mid], None)
+        self.__AddNode(a[:mid], self.Root)
+        self.__AddNode(a[mid + 1:], self.Root)
 
-        mid = (start + end) // 2
-        node = BSTNode(a[mid], parent)
-        node.Level = level
-        node.LeftChild = self._generate_node(a, start, mid - 1, node, level + 1)
-        node.RightChild = self._generate_node(a, mid + 1, end, node, level + 1)
+    def __AddNode(self, a, parent):
+        if not a:
+            return
+        n = len(a)
+        if n == 1:
+            if a[0] < parent.NodeKey:
+                parent.LeftChild = BSTNode(a[0], parent)
+                parent.LeftChild.Level = parent.Level + 1
+            else:
+                parent.RightChild = BSTNode(a[0], parent)
+                parent.RightChild.Level = parent.Level + 1
+            return
+        mid = n // 2
+        if a[mid] < parent.NodeKey:
+            parent.LeftChild = BSTNode(a[mid], parent)
+            parent.LeftChild.Level = parent.Level + 1
+            self.__AddNode(a[:mid], parent.LeftChild)
+            self.__AddNode(a[mid + 1:], parent.LeftChild)
+        else:
+            parent.RightChild = BSTNode(a[mid], parent)
+            parent.RightChild.Level = parent.Level + 1
+            self.__AddNode(a[:mid], parent.RightChild)
+            self.__AddNode(a[mid + 1:], parent.RightChild)
 
-        return node
+    def __Height(self, node):
+        if node is None:
+            return 0
+        return 1 + max(self.__Height(node.LeftChild), self.__Height(node.RightChild))
 
-    def IsBalanced(self, root_node):
-        # проверяем, сбалансировано ли дерево с корнем root_node
-        if not root_node:
+    def IsBalanced(self, node=None):
+        if node is None:
+            node = self.Root
+        if node is None:
             return True
-
-        left_height = self._get_height(root_node.LeftChild)
-        right_height = self._get_height(root_node.RightChild)
-
+        left_height = self.__Height(node.LeftChild)
+        right_height = self.__Height(node.RightChild)
         if abs(left_height - right_height) > 1:
             return False
+        return self.IsBalanced(node.LeftChild) and self.IsBalanced(node.RightChild)
 
-        return self.IsBalanced(root_node.LeftChild) and self.IsBalanced(root_node.RightChild)
 
-    def _get_height(self, node):
-        if not node:
-            return 0
-
-        left_height = self._get_height(node.LeftChild)
-        right_height = self._get_height(node.RightChild)
-
-        return max(left_height, right_height) + 1

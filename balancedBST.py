@@ -1,53 +1,52 @@
 class BSTNode:
+
     def __init__(self, key, parent):
-        self.NodeKey = key
-        self.Parent = parent
-        self.LeftChild = None
-        self.RightChild = None
-        self.Level = 0
+        self.NodeKey = key  # ключ узла
+        self.Parent = parent  # родитель или None для корня
+        self.LeftChild = None  # левый потомок
+        self.RightChild = None  # правый потомок
+        self.Level = 0  # уровень узла
 
 
 class BalancedBST:
+
     def __init__(self):
-        self.Root = None
+        self.Root = None  # корень дерева
 
     def GenerateTree(self, a):
-        # Sort the array to ensure a balanced tree
-        a.sort()
+        # создаём дерево с нуля из неотсортированного массива a
+        self.Root = self._generate_node(a, 0, len(a) - 1, None, 0)
 
-        # Recursively build the tree
-        def build_tree(parent, a, start, end):
-            if start > end:
-                return None
+    def _generate_node(self, a, start, end, parent, level):
+        if start > end:
+            return None
 
-            mid = (start + end) // 2
-            node = BSTNode(a[mid], parent)
-            node.LeftChild = build_tree(node, a, start, mid - 1)
-            node.RightChild = build_tree(node, a, mid + 1, end)
-            node.Level = node.Parent.Level + 1 if node.Parent else 0
+        mid = (start + end) // 2
+        node = BSTNode(a[mid], parent)
+        node.Level = level
+        node.LeftChild = self._generate_node(a, start, mid - 1, node, level + 1)
+        node.RightChild = self._generate_node(a, mid + 1, end, node, level + 1)
 
-            return node
-
-        self.Root = build_tree(None, a, 0, len(a) - 1)
+        return node
 
     def IsBalanced(self, root_node):
-        # Base case: an empty tree is balanced
-        if root_node is None:
+        # проверяем, сбалансировано ли дерево с корнем root_node
+        if not root_node:
             return True
 
-        # Check if the left and right subtrees are balanced
-        left_subtree_height = self.GetHeight(root_node.LeftChild)
-        right_subtree_height = self.GetHeight(root_node.RightChild)
-        if abs(left_subtree_height - right_subtree_height) > 1:
+        left_height = self._get_height(root_node.LeftChild)
+        right_height = self._get_height(root_node.RightChild)
+
+        if abs(left_height - right_height) > 1:
             return False
 
         return self.IsBalanced(root_node.LeftChild) and self.IsBalanced(root_node.RightChild)
 
+    def _get_height(self, node):
+        if not node:
+            return 0
 
-    def GetHeight(self, node):
-        if node is None:
-            return -1
+        left_height = self._get_height(node.LeftChild)
+        right_height = self._get_height(node.RightChild)
 
-        return max(self.GetHeight(node.LeftChild), self.GetHeight(node.RightChild)) + 1
-
-
+        return max(left_height, right_height) + 1

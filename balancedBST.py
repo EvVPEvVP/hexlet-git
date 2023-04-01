@@ -51,7 +51,3 @@ class BalancedBST:
         return max(self.GetHeight(node.LeftChild), self.GetHeight(node.RightChild)) + 1
 
 
-bst = BalancedBST()
-lst = [1,3,5,9,8,10,99,100,101,102,103]
-print(bst.GenerateTree(lst))
-print(bst.IsBalanced(bst.Root))

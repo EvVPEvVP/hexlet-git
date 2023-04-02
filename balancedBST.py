@@ -1,69 +1,118 @@
 class BSTNode:
-
     def __init__(self, key, parent):
-        self.NodeKey = key
-        self.Parent = parent
-        self.LeftChild = None
-        self.RightChild = None
-        self.Level = 0
+        self.NodeKey = key  # ключ узла
+        self.Parent = parent  # родитель или None для корня
+        self.LeftChild = None  # левый потомок
+        self.RightChild = None  # правый потомок
+        self.Level = 0  # уровень узла
 
 
 class BalancedBST:
-
     def __init__(self):
-        self.Root = None
+        self.Root = None  # корень дерева
 
     def GenerateTree(self, a):
+        """
+        Создает сбалансированное бинарное дерево из неотсортированного массива `a`.
+        :param a: неотсортированный массив значений
+        """
+        # Проверяем, что массив не пустой
+        if not a:
+            return
+
+        # Сортируем массив и получаем середину
+        a.sort()
+        mid = len(a) // 2
+
+        # Создаем узел для середины и делаем его корнем
+        self.Root = BSTNode(a[mid], None)
+        self.Root.Level = 0
+
+        # Рекурсивно добавляем левые и правые поддеревья
+        self.Root.LeftChild = self._add_children(a[:mid], self.Root, 1)
+        self.Root.RightChild = self._add_children(a[mid + 1:], self.Root, 1)
+
+    def _add_children(self, a, parent, level):
+        """
+        Вспомогательный метод для рекурсивного добавления дочерних узлов.
+        :param a: неотсортированный массив значений
+        :param parent: родительский узел
+        :param level: уровень дочернего узла
+        :return: дочерний узел
+        """
+        # Проверяем, что массив не пустой
         if not a:
             return None
-        a = sorted(list(set(a)))
-        n = len(a)
-        if n == 1:
-            self.Root = BSTNode(a[0], None)
-            return
-        mid = n // 2
-        self.Root = BSTNode(a[mid], None)
-        self.__AddNode(a[:mid], self.Root)
-        self.__AddNode(a[mid + 1:], self.Root)
 
-    def __AddNode(self, a, parent):
-        if not a:
-            return
-        n = len(a)
-        if n == 1:
-            if a[0] < parent.NodeKey:
-                parent.LeftChild = BSTNode(a[0], parent)
-                parent.LeftChild.Level = parent.Level + 1
-            else:
-                parent.RightChild = BSTNode(a[0], parent)
-                parent.RightChild.Level = parent.Level + 1
-            return
-        mid = n // 2
-        if a[mid] < parent.NodeKey:
-            parent.LeftChild = BSTNode(a[mid], parent)
-            parent.LeftChild.Level = parent.Level + 1
-            self.__AddNode(a[:mid], parent.LeftChild)
-            self.__AddNode(a[mid + 1:], parent.LeftChild)
-        else:
-            parent.RightChild = BSTNode(a[mid], parent)
-            parent.RightChild.Level = parent.Level + 1
-            self.__AddNode(a[:mid], parent.RightChild)
-            self.__AddNode(a[mid + 1:], parent.RightChild)
+        # Сортируем массив и получаем середину
+        a.sort()
+        mid = len(a) // 2
 
-    def __Height(self, node):
-        if node is None:
-            return 0
-        return 1 + max(self.__Height(node.LeftChild), self.__Height(node.RightChild))
+        # Создаем узел для середины и добавляем его к родителю
+        node = BSTNode(a[mid], parent)
+        node.Level = level
 
-    def IsBalanced(self, node=None):
-        if node is None:
-            node = self.Root
-        if node is None:
+        # Рекурсивно добавляем левые и правые поддеревья
+        node.LeftChild = self._add_children(a[:mid], node, level + 1)
+        node.RightChild = self._add_children(a[mid + 1:], node, level + 1)
+
+        return node
+
+    def IsBalanced(self, root_node):
+        # Base case: an empty tree is always balanced
+        if root_node is None:
             return True
-        left_height = self.__Height(node.LeftChild)
-        right_height = self.__Height(node.RightChild)
-        if abs(left_height - right_height) > 1:
-            return False
-        return self.IsBalanced(node.LeftChild) and self.IsBalanced(node.RightChild)
 
+        # Check if the left and right subtrees are balanced
+        left_subtree_height = self.get_subtree_height(root_node.LeftChild)
+        right_subtree_height = self.get_subtree_height(root_node.RightChild)
+        if abs(left_subtree_height - right_subtree_height) <= 1 \
+                and self.IsBalanced(root_node.LeftChild) \
+                and self.IsBalanced(root_node.RightChild):
+            return True
+
+        # If any of the subtrees is unbalanced, return False
+        return False
+
+    def get_subtree_height(self, node):
+        # Base case: an empty subtree has a height of -1
+        if node is None:
+            return -1
+
+        # Recursively calculate the height of the left and right subtrees
+        left_subtree_height = self.get_subtree_height(node.LeftChild)
+        right_subtree_height = self.get_subtree_height(node.RightChild)
+
+        # The height of the subtree is one greater than the maximum height of its children
+        return 1 + max(left_subtree_height, right_subtree_height)
+
+bst = BalancedBST()
+# Test array with one element
+bst.GenerateTree([42])
+assert bst.Root.NodeKey == 42
+
+
+# Test array with three elements
+bst.GenerateTree([3, 1, 2])
+assert bst.Root.NodeKey == 2
+assert bst.Root.LeftChild.NodeKey == 1
+assert bst.Root.RightChild.NodeKey == 3
+assert bst.Root.Level == 0
+assert bst.Root.LeftChild.Level == 1
+assert bst.Root.RightChild.Level == 1
+
+# Test array with six elements
+bst.GenerateTree([5, 3, 7, 2, 4, 6])
+assert bst.Root.NodeKey == 5
+assert bst.Root.LeftChild.NodeKey == 3
+assert bst.Root.RightChild.NodeKey == 7
+assert bst.Root.LeftChild.LeftChild.NodeKey == 2
+assert bst.Root.LeftChild.RightChild.NodeKey == 4
+assert bst.Root.RightChild.LeftChild.NodeKey == 6
+assert bst.Root.Level == 0
+assert bst.Root.LeftChild.Level == 1
+assert bst.Root.RightChild.Level == 1
+assert bst.Root.LeftChild.LeftChild.Level == 2
+assert bst.Root.LeftChild.RightChild.Level == 2
+assert bst.Root.RightChild.LeftChild.Level == 2
 

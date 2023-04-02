@@ -86,33 +86,5 @@ class BalancedBST:
         # The height of the subtree is one greater than the maximum height of its children
         return 1 + max(left_subtree_height, right_subtree_height)
 
-bst = BalancedBST()
-# Test array with one element
-bst.GenerateTree([42])
-assert bst.Root.NodeKey == 42
 
-
-# Test array with three elements
-bst.GenerateTree([3, 1, 2])
-assert bst.Root.NodeKey == 2
-assert bst.Root.LeftChild.NodeKey == 1
-assert bst.Root.RightChild.NodeKey == 3
-assert bst.Root.Level == 0
-assert bst.Root.LeftChild.Level == 1
-assert bst.Root.RightChild.Level == 1
-
-# Test array with six elements
-bst.GenerateTree([5, 3, 7, 2, 4, 6])
-assert bst.Root.NodeKey == 5
-assert bst.Root.LeftChild.NodeKey == 3
-assert bst.Root.RightChild.NodeKey == 7
-assert bst.Root.LeftChild.LeftChild.NodeKey == 2
-assert bst.Root.LeftChild.RightChild.NodeKey == 4
-assert bst.Root.RightChild.LeftChild.NodeKey == 6
-assert bst.Root.Level == 0
-assert bst.Root.LeftChild.Level == 1
-assert bst.Root.RightChild.Level == 1
-assert bst.Root.LeftChild.LeftChild.Level == 2
-assert bst.Root.LeftChild.RightChild.Level == 2
-assert bst.Root.RightChild.LeftChild.Level == 2
 

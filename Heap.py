@@ -19,37 +19,30 @@ class Heap:
         return self.HeapArray
 
     def GetMax(self):
-        count_N = 0
-        for i in self.HeapArray:
-            if i == None:
-                count_N += 1
-        if len(self.HeapArray) == count_N:
-            return -1  # если куча пуста состоит из None
-        if len(self.HeapArray) - 1 == count_N:  # если куча  состоит из одного элемента
+        if len(self.HeapArray) == 0 or self.HeapArray[0] is None:
             return -1
-        count = 0
-        index = 0
-        for i in self.HeapArray:
-            if i != None:
-                count += 1
-        root =  self.HeapArray[0]
-        self.HeapArray[0] = self.HeapArray[count - 1]
-        self.HeapArray[count - 1] = None
+        max_val = self.HeapArray[0]
+        self.HeapArray[0] = None
+        i = 0
         while True:
-            if 2 * index + 1 > count - 2 or 2 * index + 2 > count - 2:
-                return root, self.HeapArray
-            if self.HeapArray[2 * index + 2] > self.HeapArray[2 * index + 1]:
-                swapR = self.HeapArray[index]
-                self.HeapArray[index] = self.HeapArray[2 * index + 2]
-                self.HeapArray[2 * index + 2] = swapR
-                index = 2 * index + 2
-            if 2 * index + 1 > count - 2 or 2 * index + 2 > count - 2:
-                return root, self.HeapArray
-            if self.HeapArray[2 * index + 2] < self.HeapArray[2 * index + 1]:
-                swapL = self.HeapArray[index]
-                self.HeapArray[index] = self.HeapArray[2 * index + 1]
-                self.HeapArray[2 * index + 1] = swapL
-                index = 2 * index + 1
+            left_child = 2 * i + 1
+            right_child = 2 * i + 2
+            max_child = None
+            if left_child < len(self.HeapArray) and self.HeapArray[left_child] is not None:
+                max_child = left_child
+            if right_child < len(self.HeapArray) and self.HeapArray[right_child] is not None:
+                if max_child is None or self.HeapArray[right_child] > self.HeapArray[max_child]:
+                    max_child = right_child
+            if max_child is None:
+                break
+            if self.HeapArray[i] is None or self.HeapArray[i] < self.HeapArray[max_child]:
+                swap = self.HeapArray[max_child]
+                self.HeapArray[max_child] = self.HeapArray[i]
+                self.HeapArray[i] = swap
+                i = max_child
+            else:
+                break
+        return max_val
 
     def Add(self, key):
         count = 0

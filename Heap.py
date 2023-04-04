@@ -1,48 +1,68 @@
 class Heap:
-
     def __init__(self):
-        self.HeapArray = []  # хранит неотрицательные числа-ключи
+        self.HeapArray = []
 
     def MakeHeap(self, a, depth):
-        self.HeapArray = [None] * (2 ** (depth + 1) - 1)  # создаем итоговый архив с нанами
-        if len(a) == 0:
-            return self.HeapArray
-        self.HeapArray[0] = a[0]  # сразу ставим первый элемент
-        for i in range(1, len(a)):  # пробегаем  по данным исходного массива начиная со второго тк первый уже вставили
-            self.HeapArray[i] = a[i]  # вставляем элемент на первое свободное поле
-            while self.HeapArray[i] > self.HeapArray[int((i - 1) / 2)]:  # если элемент больше родителя
-                swap = self.HeapArray[int((i - 1) / 2)]  # сохраняем значение родителя в переменной
-                self.HeapArray[int((i - 1) / 2)] = self.HeapArray[i]  # меняем значение  родителя на ребенка
-                self.HeapArray[i] = swap  # меняем значение ребенка на родителя
-                i = int((i - 1) // 2)  # увеличивваем индекс на родительский
+        # calculate the maximum number of nodes in a heap of depth 'depth'
+        max_nodes = 2**(depth+1) - 1
 
-        return self.HeapArray
+        # initialize HeapArray with None values
+        self.HeapArray = [None] * max_nodes
+
+        # insert elements from 'a' into HeapArray
+        for i in range(len(a)):
+            self.HeapArray[i] = a[i]
+            j = i
+            while j > 0:
+                parent = (j-1) // 2
+                if self.HeapArray[j] > self.HeapArray[parent]:
+                    # swap elements if parent is smaller
+                    self.HeapArray[j], self.HeapArray[parent] = self.HeapArray[parent], self.HeapArray[j]
+                    j = parent
+                else:
+                    break
 
     def GetMax(self):
+        # return None if the heap is empty
         if len(self.HeapArray) == 0 or self.HeapArray[0] is None:
-            return -1
-        max_val = self.HeapArray[0]
-        self.HeapArray[0] = None
-        i = 0
+            return None
+
+        # extract the maximum element
+        max_elem = self.HeapArray[0]
+
+        # find the last element in the heap and remove it
+        last_elem = None
+        for i in range(len(self.HeapArray)-1, -1, -1):
+            if self.HeapArray[i] is not None:
+                last_elem = self.HeapArray[i]
+                self.HeapArray[i] = None
+                break
+
+        # move the last element to the root position and sift it down
+        current_index = 0
+        self.HeapArray[current_index] = last_elem
         while True:
-            left_child = 2 * i + 1
-            right_child = 2 * i + 2
-            max_child = None
-            if left_child < len(self.HeapArray) and self.HeapArray[left_child] is not None:
-                max_child = left_child
-            if right_child < len(self.HeapArray) and self.HeapArray[right_child] is not None:
-                if max_child is None or self.HeapArray[right_child] > self.HeapArray[max_child]:
-                    max_child = right_child
-            if max_child is None:
+            left_child_index = 2*current_index + 1
+            right_child_index = 2*current_index + 2
+
+            # find the index of the child with the maximum value
+            max_child_index = current_index
+            if left_child_index < len(self.HeapArray) and self.HeapArray[left_child_index] is not None and self.HeapArray[left_child_index] > self.HeapArray[max_child_index]:
+                max_child_index = left_child_index
+            if right_child_index < len(self.HeapArray) and self.HeapArray[right_child_index] is not None and self.HeapArray[right_child_index] > self.HeapArray[max_child_index]:
+                max_child_index = right_child_index
+
+            # if the current node is already larger than its children, stop sifting down
+            if max_child_index == current_index:
                 break
-            if self.HeapArray[i] is None or self.HeapArray[i] < self.HeapArray[max_child]:
-                swap = self.HeapArray[max_child]
-                self.HeapArray[max_child] = self.HeapArray[i]
-                self.HeapArray[i] = swap
-                i = max_child
-            else:
-                break
-        return max_val
+
+            # otherwise, swap the current node with the child with the maximum value
+            self.HeapArray[current_index], self.HeapArray[max_child_index] = self.HeapArray[max_child_index], self.HeapArray[current_index]
+
+            # move down to the child with the maximum value
+            current_index = max_child_index
+
+        return max_elem
 
     def Add(self, key):
         count = 0

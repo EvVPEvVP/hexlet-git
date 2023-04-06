@@ -16,10 +16,10 @@ class SimpleGraph:
             index += 1
         if index == len(self.vertex):
             # Vertex array is full
-            return False
+            return
         # Create a new Vertex object and add it to the array
         self.vertex[index] = Vertex(v)
-        return True
+        return
 
     def RemoveVertex(self, v):
         # Remove all edges associated with vertex v
@@ -28,6 +28,7 @@ class SimpleGraph:
             self.m_adjacency[i][v] = 0
         # Remove vertex v
         self.vertex[v] = None
+        return 
 
     def IsEdge(self, v1, v2):
         return bool(self.m_adjacency[v1][v2])

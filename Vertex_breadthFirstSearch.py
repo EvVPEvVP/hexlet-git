@@ -40,68 +40,42 @@ class SimpleGraph:
         self.m_adjacency[v1][v2] = 0
         self.m_adjacency[v2][v1] = 0
 
-    def DepthFirstSearch(self, VFrom, VTo):
-        # Mark all vertices as not visited
-        for vertex in self.vertex:
-            if vertex:
-                vertex.hit = False
-
-        # Define a recursive helper function to perform DFS
-        def dfs_helper(vertex):
-            # Mark the current vertex as visited
-            vertex.hit = True
-
-            # If the current vertex is the target, return it
-            if vertex == self.vertex[VTo]:
-                return [vertex]
-
-            # Recursively search all unvisited adjacent vertices of the current vertex
-            for i in range(len(self.vertex)):
-                if self.m_adjacency[self.vertex.index(vertex)][i] and not self.vertex[i].hit:
-                    result = dfs_helper(self.vertex[i])
-                    if result:
-                        result.insert(0, vertex)
-                        return result
-
-            # No path found from the current vertex
-            return None
-
-        # Call the helper function with the starting vertex
-        return dfs_helper(self.vertex[VFrom]) or []
-
     def BreadthFirstSearch(self, VFrom, VTo):
         # Mark all vertices as not visited
         for vertex in self.vertex:
             if vertex:
                 vertex.hit = False
 
-        # Initialize the queue with the starting vertex
-        queue = [self.vertex[VFrom]]
-        # Initialize a dictionary to keep track of the path from the starting vertex
-        path = {self.vertex[VFrom]: []}
+        # Initialize a queue to hold the vertices to visit
+        queue = []
+        # Mark the starting vertex as visited and enqueue it
+        self.vertex[VFrom].hit = True
+        queue.append(self.vertex[VFrom])
+        # Initialize a dictionary to keep track of the parent vertex of each visited vertex
+        parent = {self.vertex[VFrom]: None}
 
-        # Perform BFS
+        # Loop until the queue is empty or the target vertex is found
         while queue:
-            # Get the next vertex from the queue
+            # Dequeue a vertex from the queue
             current_vertex = queue.pop(0)
 
-            # If the current vertex is the target, return the path to it
+            # If the current vertex is the target, reconstruct and return the shortest path
             if current_vertex == self.vertex[VTo]:
-                result = [current_vertex]
-                while current_vertex != self.vertex[VFrom]:
-                    current_vertex = path[current_vertex]
-                    result.insert(0, current_vertex)
-                return result
+                path = []
+                while current_vertex is not None:
+                    path.insert(0, current_vertex)
+                    current_vertex = parent[current_vertex]
+                return path
 
-            # Mark the current vertex as visited
-            current_vertex.hit = True
-
-            # Add all unvisited adjacent vertices to the queue and update their paths
+            # Enqueue all unvisited adjacent vertices of the current vertex
             for i in range(len(self.vertex)):
                 if self.m_adjacency[self.vertex.index(current_vertex)][i] and not self.vertex[i].hit:
+                    self.vertex[i].hit = True
                     queue.append(self.vertex[i])
-                    path[self.vertex[i]] = current_vertex
+                    parent[self.vertex[i]] = current_vertex
 
-        # No path found
+        # No path found from the starting vertex to the target vertex
         return []
+
+
 

@@ -1,0 +1,131 @@
+class Vertex:
+    def __init__(self, val):
+        self.Value = val
+        self.hit = False
+
+class SimpleGraph:
+    def __init__(self, size):
+        self.max_vertex = size
+        self.m_adjacency = [[0] * size for _ in range(size)]
+        self.vertex = [None] * size
+
+    def AddVertex(self, v):
+        # Find the first empty slot in the vertex array
+        index = 0
+        while index < len(self.vertex) and self.vertex[index] is not None:
+            index += 1
+        if index == len(self.vertex):
+            # Vertex array is full
+            return False
+        # Create a new Vertex object and add it to the array
+        self.vertex[index] = Vertex(v)
+        return True
+
+    def RemoveVertex(self, v):
+        # Remove all edges associated with vertex v
+        for i in range(len(self.m_adjacency)):
+            self.m_adjacency[v][i] = 0
+            self.m_adjacency[i][v] = 0
+        # Remove vertex v
+        self.vertex[v] = None
+
+    def IsEdge(self, v1, v2):
+        return bool(self.m_adjacency[v1][v2])
+
+    def AddEdge(self, v1, v2):
+        self.m_adjacency[v1][v2] = 1
+        self.m_adjacency[v2][v1] = 1
+
+    def RemoveEdge(self, v1, v2):
+        self.m_adjacency[v1][v2] = 0
+        self.m_adjacency[v2][v1] = 0
+
+    def BreadthFirstSearch(self, VFrom, VTo):
+        # Mark all vertices as not visited
+        for vertex in self.vertex:
+            if vertex:
+                vertex.hit = False
+
+        # Initialize a queue to hold the vertices to visit
+        queue = []
+        # Mark the starting vertex as visited and enqueue it
+        self.vertex[VFrom].hit = True
+        queue.append(self.vertex[VFrom])
+        # Initialize a dictionary to keep track of the parent vertex of each visited vertex
+        parent = {self.vertex[VFrom]: None}
+
+        # Loop until the queue is empty or the target vertex is found
+        while queue:
+            # Dequeue a vertex from the queue
+            current_vertex = queue.pop(0)
+
+            # If the current vertex is the target, reconstruct and return the shortest path
+            if current_vertex == self.vertex[VTo]:
+                path = []
+                while current_vertex is not None:
+                    path.insert(0, current_vertex)
+                    current_vertex = parent[current_vertex]
+                return path
+
+            # Enqueue all unvisited adjacent vertices of the current vertex
+            for i in range(len(self.vertex)):
+                if self.m_adjacency[self.vertex.index(current_vertex)][i] and not self.vertex[i].hit:
+                    self.vertex[i].hit = True
+                    queue.append(self.vertex[i])
+                    parent[self.vertex[i]] = current_vertex
+
+        # No path found from the starting vertex to the target vertex
+        return []
+
+    def WeakVertices(self):
+        weak_vertices = []
+        for i in range(len(self.vertex)):
+            is_weak_vertex = True
+            for j in range(len(self.vertex)):
+                if self.m_adjacency[i][j] != 1:
+                    continue
+                for k in range(len(self.vertex)):
+                    if self.m_adjacency[i][k] == 1 and self.m_adjacency[j][k] == 1:
+                        is_weak_vertex = False
+                        break
+                if not is_weak_vertex:
+                    break
+            if is_weak_vertex:
+                weak_vertices.append(self.vertex[i])
+        return weak_vertices
+
+
+
+def test_WeakVertices():
+    # Create a simple graph with 6 vertices and add edges to form 2 triangles
+    g = SimpleGraph(9)
+    g.AddVertex(0)
+    g.AddVertex(1)
+    g.AddVertex(2)
+    g.AddVertex(3)
+    g.AddVertex(4)
+    g.AddVertex(5)
+    g.AddVertex(6)
+    g.AddVertex(7)
+    g.AddVertex(8)
+    g.AddEdge(0, 1)
+    g.AddEdge(0, 2)
+    g.AddEdge(0, 3)
+    g.AddEdge(1, 3)
+    g.AddEdge(2, 3)
+    g.AddEdge(1, 4)
+    g.AddEdge(3, 5)
+    g.AddEdge(4, 5)
+    g.AddEdge(5, 7)
+    g.AddEdge(5, 8)
+    g.AddEdge(7, 8)
+    g.AddEdge(6, 8)
+    # g.AddEdge(5, 6)
+    # g.AddEdge(4, 7)
+
+    # Test WeakVertices method
+    weak_vertices = g.WeakVertices()
+    print(weak_vertices)
+
+test_WeakVertices()
+

@@ -22,6 +22,3 @@ def greet(greeting, punctuation, name, end_sign):
 first_step = greet("Hello")(",")("!")
 result = first_step("Petya")
 print(result)  # Вывод: Hello, Petya!
-
-# Другой вариант использования
-print(greet("Hi")(":")("!!!")("Alice"))  # Выведет: Hi: Alice!!!

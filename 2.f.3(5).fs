@@ -10,10 +10,3 @@ let prime n =
             elif n % i = 0 then false
             else check (i + 1)
         check 2
-		
-		
-
-
-
-
-Неверный результат для notDivisible (2,4)

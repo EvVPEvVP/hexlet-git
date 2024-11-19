@@ -1,5 +1,5 @@
 // 16.1
-let notDivisible (n, m) = m % n <> 0
+let notDivisible (n, m) = m % n = 0
 
 // 16.2
 let prime n =
@@ -10,3 +10,10 @@ let prime n =
             elif n % i = 0 then false
             else check (i + 1)
         check 2
+		
+		
+
+
+
+
+Неверный результат для notDivisible (2,4)

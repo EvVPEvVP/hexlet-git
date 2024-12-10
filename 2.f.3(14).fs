@@ -52,7 +52,10 @@ let rec minus (xs1, xs2) =
 // 40.3.1
 let rec smallest = function
     | [] -> None
-    | x::xs -> Some(x)
+    | [x] -> Some(x)
+    | x::xs -> match smallest xs with
+               | None -> Some(x)
+               | Some(y) -> Some(min x y)
 
 // 40.3.2
 let rec delete (n, xs) = 
